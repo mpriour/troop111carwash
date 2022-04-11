@@ -4,6 +4,12 @@ import { prisma } from "~/db.server";
 
 export type { Ad } from "@prisma/client";
 
+export enum AdSize {
+  "small" = 1,
+  "medium" = 2,
+  "large" = 3
+}
+
 export function getAd({
   id
 }: Pick<Ad, "id">) {
