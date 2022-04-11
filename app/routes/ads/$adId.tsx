@@ -3,33 +3,39 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import type { Note } from "~/models/note.server";
-import { deleteNote } from "~/models/note.server";
-import { getNote } from "~/models/note.server";
+import type { Ad } from "~/models/ad.server";
+import { deleteAd } from "~/models/ad.server";
+import { getAd } from "~/models/ad.server";
 import { requireUserId } from "~/session.server";
 
 type LoaderData = {
-  note: Note;
+  ad: Ad;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  if (!userId) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+  invariant(params.id, "adId not found");
 
-  const note = await getNote({ userId, id: params.noteId });
-  if (!note) {
+  const ad = await getAd({ id: params.id });
+  if (!ad) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>({ note });
+  return json<LoaderData>({ ad });
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  if (!userId) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+  invariant(params.id, "adId not found");
 
-  await deleteNote({ userId, id: params.noteId });
+  await deleteAd({ id: params.id });
 
-  return redirect("/notes");
+  return redirect("/ads");
 };
 
 export default function NoteDetailsPage() {
@@ -37,8 +43,12 @@ export default function NoteDetailsPage() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.note.title}</h3>
-      <p className="py-6">{data.note.body}</p>
+      <h3 className="text-2xl font-bold">{data.ad.sponsor}</h3>
+      <img src={data.ad.imgUrl} alt={data.ad.sponsor} className="my-4" />
+      <label className="my-4">Sponsor Url : {data.ad.sponsorUrl.length ? <a href={data.ad.sponsorUrl} target="_blank" rel="noreferrer">{data.ad.sponsorUrl}</a> : null}</label>
+      <label className="my-4">Size : {data.ad.size}</label>
+      <label className="my-4">Year : {data.ad.year}</label>
+      <label className="my-4">Updated : {data.ad.updatedAt}</label>
       <hr className="my-4" />
       <Form method="post">
         <button
@@ -62,7 +72,10 @@ export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <div>Note not found</div>;
+    return <div>Ad not found</div>;
+  }
+  if (caught.status === 401) {
+    return <div>Logged in user required</div>;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
