@@ -43,7 +43,8 @@ model Ad {
   imgUrl     String
   sponsorUrl String
   size       Int
-  year       Int @default(2022)
+  year       Int    @default(2022)
+  orient     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
