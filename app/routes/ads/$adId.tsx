@@ -17,9 +17,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!userId) {
     throw new Response("Unauthorized", { status: 401 });
   }
-  invariant(params.id, "adId not found");
+  invariant(params.adId, "adId not found");
 
-  const ad = await getAd({ id: params.id });
+  const ad = await getAd({ id: params.adId });
   if (!ad) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -31,24 +31,24 @@ export const action: ActionFunction = async ({ request, params }) => {
   if (!userId) {
     throw new Response("Unauthorized", { status: 401 });
   }
-  invariant(params.id, "adId not found");
+  invariant(params.adId, "adId not found");
 
-  await deleteAd({ id: params.id });
+  await deleteAd({ id: params.adId });
 
   return redirect("/ads");
 };
 
-export default function NoteDetailsPage() {
-  const data = useLoaderData() as LoaderData;
+export default function AdDetailsPage() {
+  const {ad} = useLoaderData() as LoaderData;
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.ad.sponsor}</h3>
-      <img src={data.ad.imgUrl} alt={data.ad.sponsor} className="my-4" />
-      <label className="my-4">Sponsor Url : {data.ad.sponsorUrl.length ? <a href={data.ad.sponsorUrl} target="_blank" rel="noreferrer">{data.ad.sponsorUrl}</a> : null}</label>
-      <label className="my-4">Size : {data.ad.size}</label>
-      <label className="my-4">Year : {data.ad.year}</label>
-      <label className="my-4">Updated : {data.ad.updatedAt}</label>
+      <h3 className="text-2xl font-bold">{ad.sponsor}</h3>
+      <img src={ad.imgUrl} alt={ad.sponsor} className="my-4" />
+      <label className="my-4">Sponsor Url : {ad.sponsorUrl.length ? <a href={ad.sponsorUrl} target="_blank" rel="noreferrer">{ad.sponsorUrl}</a> : null}</label>
+      <label className="my-4">Size : {ad.size}</label>
+      <label className="my-4">Year : {ad.year}</label>
+      <label className="my-4">Updated : {ad.updatedAt}</label>
       <hr className="my-4" />
       <Form method="post">
         <button
