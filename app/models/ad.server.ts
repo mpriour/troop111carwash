@@ -46,8 +46,9 @@ export function createAd({
   imgUrl,
   size,
   year,
-  sponsorUrl
-}: Pick<Ad, "sponsor"|"imgUrl"|"sponsorUrl"|"size"|"year">
+  sponsorUrl,
+  orient
+}: Pick<Ad, "sponsor"|"imgUrl"|"sponsorUrl"|"size"|"year"|"orient">
 ) {
   return prisma.ad.create({
     data: {
@@ -55,7 +56,8 @@ export function createAd({
       imgUrl,
       size,
       year,
-      sponsorUrl
+      sponsorUrl,
+      orient
     },
   });
 }
