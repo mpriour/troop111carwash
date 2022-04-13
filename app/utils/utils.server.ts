@@ -24,5 +24,7 @@ async function uploadImage(fileStream: Stream) {
   });
 }
 
-console.log("configs", cloudinary.v2.config());
+if(process.env.NODE_ENV != "production"){
+  console.log("configs", cloudinary.v2.config());
+}
 export { uploadImage };
