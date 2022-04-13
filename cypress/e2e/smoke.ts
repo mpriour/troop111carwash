@@ -23,7 +23,7 @@ describe("smoke tests", () => {
     cy.findByRole("button", { name: /logout/i }).click();
     cy.findByRole("link", { name: /log in/i });
   });
-
+/*
   it("should allow you to make a note", () => {
     const testNote = {
       title: faker.lorem.words(1),
@@ -44,5 +44,5 @@ describe("smoke tests", () => {
     cy.findByRole("button", { name: /delete/i }).click();
 
     cy.findByText("No notes yet");
-  });
+  }); */
 });
