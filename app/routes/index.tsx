@@ -11,12 +11,12 @@ type LoaderData = { ads: Array<Ad | null> };
 
 const gridPosition = (ad: Ad): string => {
   if (ad.size === 3) {
-    return (ad.orient === "p") ? "col-span-2 row-span-2" : "col-span-4 row-span-2";
+    return (ad.orient === "p") ? "col-span-2 row-span-2" : "col-span-2 sm:col-span-4 row-span-2";
   }
   if (ad.size === 2) {
     return "col-span-2 row-span-1";
   }
-  return "";
+  return "col-span-2 sm:col-span-1";
 }
 
 const pickLargeP = (remaining: Ad[], final: Array<Ad | null>) => {
@@ -150,7 +150,7 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <>
-      <header className="w-full py-2 px-6 bg-yellow-400 flex justify-between items-center">
+      <header className="w-full py-2 px-6 bg-yellow-400 flex justify-between items-center gap-x-2">
         {user ?
           <>
           <div>
@@ -170,14 +170,9 @@ export default function Index() {
       </header>
       <main className="relative min-h-screen bg-blue-100 sm:flex sm:items-center sm:justify-center px-4">
         <div className="relative sm:pb-16 sm:pt-8">
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gridAutoRows: "360px",
-            gap: "1rem"
-          }}>
-            {data.ads.map((ad) => (
-              ad === null ? <div></div> :
+          <div className="grid auto-rows-[360px] grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
+            {data.ads.map((ad, i) => (
+              ad === null ? <div key={i}></div> :
                 <div key={ad.id} className={`${gridPosition(ad)} rounded p-2 text-center`}>
                   <h3 className="font-sans text-2xl text-gray-700">{ad.sponsor}</h3>
                   <div className="h-[90%]">
