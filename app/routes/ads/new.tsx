@@ -31,7 +31,7 @@ const uploadHandler: UploadHandler = async ({ name, stream }) => {
 export const action: ActionFunction = async ({ request }) => {
   await requireUserId(request);
   let formData;
-  if (request.headers.get("Content-Type")?.includes("multipart")) {
+  if(request.headers.get("Content-Type")?.includes("multipart")){
     formData = await unstable_parseMultipartFormData(
       request,
       uploadHandler
@@ -121,8 +121,7 @@ export default function NewAdPage() {
       }}
     >
       {!actionData?.imgSrc || actionData?.error?.id === "img_upload" ?
-        <>
-        {/* <div>
+        <div>
           <label className="flex w-full flex-col gap-1">
             <span>Image to Upload: </span>
             <input type="file" name="img" id="img_upload" accept="image/*" />
@@ -141,17 +140,7 @@ export default function NewAdPage() {
               {actionData.error.msg}
             </div>
           )}
-        </div> */}
-        <div>
-          <label className="flex w-full flex-col gap-1">
-            <span>Img URL: </span>
-            <input
-              name="imgUrl"
-              className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-            />
-          </label>
-        </div>
-        </> :
+        </div> :
         <div>
           <label className="flex w-full flex-col gap-1">
             <span>Img URL: </span>
