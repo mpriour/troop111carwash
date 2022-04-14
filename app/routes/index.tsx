@@ -150,25 +150,25 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <>
-      <header className="w-full py-2 px-6 bg-yellow-400 flex justify-between items-center gap-x-2">
+      <header className="w-full py-6 px-6 bg-yellow-400 flex justify-between items-center gap-x-2">
         {user ?
           <>
           <div>
-            <h1 className="text-blue-600">Welcome {user.email}</h1>
+            <h1 className="text-blue-700">Welcome {user.email}</h1>
           </div>
             <Link to="./ads/new" className="rounded bg-blue-600 py-2 px-4 text-white hover:bg-blue-800 focus:bg-blue-400">Create Ad</Link>
           </> :
           <>
           <div>
-            <h1 className="text-blue-600 font-serif text-3xl">Troop 111 Car Wash Sponsors</h1>
+            <h1 className="text-blue-700 font-serif text-4xl font-semibold">Troop 111 Car Wash Sponsors</h1>
           </div>
-          <div className="text-black font-sans">
+          <div className="text-black font-sans sm:text-lg">
             All proceeds from the car wash help our Troop attend Summer Camp, High Adventure Bases, and other activities
           </div>
           </>
           }
       </header>
-      <main className="relative min-h-screen bg-blue-100 sm:flex sm:items-center sm:justify-center px-4">
+      <main className="relative min-h-screen bg-blue-200 sm:flex sm:items-center sm:justify-center px-4">
         <div className="relative sm:pb-16 sm:pt-8">
           <div className="grid auto-rows-[360px] grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
             {data.ads.map((ad, i) => (
@@ -179,7 +179,7 @@ export default function Index() {
                     <img src={ad.imgUrl} alt="" className="h-full mx-auto" />
                   </div>
                   {ad.sponsorUrl.length > 0 ?
-                    <p><a href={`https://${ad.sponsorUrl}`} className="cursor-pointer text-blue-600">{ad.sponsorUrl}</a></p> :
+                    <p><a href={`http://${ad.sponsorUrl}`} className="cursor-pointer text-blue-600" target="_blank" rel="noreferrer">{ad.sponsorUrl}</a></p> :
                     null
                   }
                 </div>
