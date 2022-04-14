@@ -122,7 +122,7 @@ export default function NewAdPage() {
     >
       {!actionData?.imgSrc || actionData?.error?.id === "img_upload" ?
         <>
-        <div>
+        {/* <div>
           <label className="flex w-full flex-col gap-1">
             <span>Image to Upload: </span>
             <input type="file" name="img" id="img_upload" accept="image/*" />
@@ -141,7 +141,7 @@ export default function NewAdPage() {
               {actionData.error.msg}
             </div>
           )}
-        </div>
+        </div> */}
         <div>
           <label className="flex w-full flex-col gap-1">
             <span>Img URL: </span>
