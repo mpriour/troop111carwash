@@ -62,6 +62,31 @@ export function createAd({
   });
 }
 
+export function editAd({
+  id,
+  sponsor,
+  imgUrl,
+  size,
+  year,
+  sponsorUrl,
+  orient
+}: Pick<Ad, "id"|"sponsor"|"imgUrl"|"sponsorUrl"|"size"|"year"|"orient">
+) {
+  return prisma.ad.update({
+    where: {
+      id
+    },
+    data: {
+      sponsor,
+      imgUrl,
+      size,
+      year,
+      sponsorUrl,
+      orient
+    },
+  });
+}
+
 export function deleteAd({
   id,
 }: Pick<Ad, "id">) {

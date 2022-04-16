@@ -43,7 +43,8 @@ export default function AdsPage() {
       <ul>
       {adsByYear[parseInt(yr)].map((ad, i) => (
         <li key={ad.id}>
-          <div className="flex">
+          <div className="flex gap-x-4">
+            <Link to={`./edit/${ad.id}`}><div className="rounded bg-blue-500 text-white px-3 py-1">Edit</div></Link>
             <Link to={`./${ad.id}`}>{`${yr} - ${i+1}`}</Link>
             <p>{ad.sponsorUrl.length ?
               <a href={ad.sponsorUrl} target="_blank" rel="noreferrer">{ad.sponsor}</a> :
