@@ -16,70 +16,6 @@ type LoaderData = {
   ads: Array<Ad>;
 };
 
-const gridPosition = (ad: Ad): string => {
-  if (ad.size === 3) {
-    return (ad.orient === "p") ? "col-span-2 row-span-2 sm:col-span-1" : "col-span-2 row-span-1 sm:row-span-2";
-  }
-  if (ad.size === 2) {
-    return "col-span-1 row-span-1";
-  }
-  return "";
-}
-
-const pickLargeP = (remaining: Ad[], final: Array<Ad | null>) => {
-  const info = getAdsBySizeOrient(remaining, 3, "p");
-  info.forEach((ndx) => {
-    const pick = remaining.splice(ndx, 1);
-    final.push(pick[0])
-  })
-  return info.length;
-}
-
-const pickLargeL = (remaining: Ad[], final: Array<Ad | null>) => {
-  const info = getAdsBySizeOrient(remaining, 3, "l");
-  info.forEach((ndx) => {
-    const pick = remaining.splice(ndx, 1);
-    final.push(pick[0])
-  })
-  return info.length;
-}
-
-const pickMediumL = (remaining: Ad[], final: Array<Ad | null>) => {
-  const info = getAdsBySizeOrient(remaining, 2, "l", 2);
-  info.forEach((ndx) => {
-    const pick = remaining.splice(ndx, 1);
-    final.push(pick[0])
-  })
-  return info.length;
-}
-
-const pickMediumP = (remaining: Ad[], final: Array<Ad | null>) => {
-  const info = getAdsBySizeOrient(remaining, 2, "p", 2);
-  info.forEach((ndx) => {
-    const pick = remaining.splice(ndx, 1);
-    final.push(pick[0])
-  })
-  return info.length;
-}
-
-const pickSmallL = (remaining: Ad[], final: Array<Ad | null>) => {
-  const info = getAdsBySizeOrient(remaining, 1, "l", 4);
-  info.forEach((ndx) => {
-    const pick = remaining.splice(ndx, 1);
-    final.push(pick[0])
-  })
-  return info.length;
-}
-
-const pickSmallP = (remaining: Ad[], final: Array<Ad | null>) => {
-  const info = getAdsBySizeOrient(remaining, 1, "p", 4);
-  info.forEach((ndx) => {
-    const pick = remaining.splice(ndx, 1);
-    final.push(pick[0])
-  })
-  return info.length;
-}
-
 const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
   const info = getAdsBySizeOrient(remaining, 1);
   info.forEach((ndx) => {
@@ -117,57 +53,6 @@ const getAdsBySizeOrient = (ads: Ad[], size: number, orient?: string, limit = 1)
     results.push(i);
   }
   return results;
-}
-
-const masonrySort = (remaining: Ad[], final: Array<Ad | null>) => {
-  const r1count = masonrySortType1(remaining, final);
-  const r2count = masonrySortType2(remaining, final);
-  if ((r1count > 0 || r2count > 0) && remaining.length > 0) {
-    masonrySort(remaining, final);
-  }
-}
-
-const masonrySortType1 = (remaining: Ad[], final: Array<Ad | null>): number => {
-  let c = 0;
-  const lpCount = pickLargeP(remaining, final);
-  c += lpCount * 8;
-  const mlCount = pickMediumL(remaining, final);
-  c += mlCount * 4;
-  const slCount = pickSmallL(remaining, final);
-  c += slCount;
-  if (c === 0) {
-    return c;
-  }
-  while (c < 16) {
-    final.push(null);
-    c++;
-  }
-  return c;
-}
-
-const masonrySortType2 = (remaining: Ad[], final: Array<Ad | null>): number => {
-  let c = 0;
-  if (pickLargeL(remaining, final) === 1) {
-    return 16;
-  }
-  const mpCount = pickMediumP(remaining, final);
-  if (mpCount === 2) {
-    return 16;
-  } else {
-    c += mpCount * 8;
-  }
-  const spCount = pickSmallP(remaining, final);
-  c += spCount * 2;
-  if (c === 0) {
-    return c;
-  } else if (c <= 8) {
-    c += (pickSmallP(remaining, final) * 2)
-  }
-  while (c < 16) {
-    final.push(null);
-    c++;
-  }
-  return c;
 }
 
 const getSmalls = (remaining: Ad[]) => {
@@ -223,6 +108,16 @@ const masonryStyles = (ad: Ad): string => {
     cn += (ad.orient == 'p' ? ' max-w-full sm:w-full' : ' max-h-full sm:h-full');
   }
   return cn;
+}
+
+const gridPosition = (ad: Ad): string => {
+  if (ad.size === 3) {
+    return (ad.orient === "p") ? "col-span-2 row-span-2 sm:col-span-1" : "col-span-2 row-span-1 sm:row-span-2";
+  }
+  if (ad.size === 2) {
+    return "col-span-1 row-span-1";
+  }
+  return "";
 }
 
 const randomize = () => Math.round(Math.random()) - Math.round(Math.random())
