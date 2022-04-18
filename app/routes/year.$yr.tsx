@@ -6,6 +6,7 @@ import type { Ad } from "~/models/ad.server";
 import { getAds } from "~/models/ad.server";
 
 import { useOptionalUser } from "~/utils";
+import invariant from "tiny-invariant";
 
 type LoaderData = {
   splitAds: {
@@ -121,8 +122,13 @@ const gridPosition = (ad: Ad): string => {
 
 const randomize = () => Math.round(Math.random()) - Math.round(Math.random())
 
-export const loader: LoaderFunction = async () => {
-  const ads = await getAds({ year: 2021 });
+export const loader: LoaderFunction = async ({request, params}) => {
+  invariant(params.yr, "Year not provided");
+  const yr = parseInt(params.yr, 10);
+  if(isNaN(yr)){
+    throw(new Error("Year not valid"));
+  }
+  const ads = await getAds({ year: yr });
   return json<LoaderData>({
     splitAds: {
       small: getSmalls(ads).sort(randomize),
@@ -137,7 +143,7 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <>
-      <header className="relative w-full py-3 px-2 sm:p-6 bg-yellow-400 flex justify-between items-center gap-x-2">
+      <header className="w-full py-6 px-6 bg-yellow-400 flex justify-between items-center gap-x-2">
         {user ?
           <>
             <div>
@@ -152,14 +158,11 @@ export default function Index() {
                 Troop 111 Car Wash Sponsors
               </h1>
             </div>
-            <div className="text-black font-sans md:text-lg">
+            <div className="text-black font-sans sm:text-lg">
               All proceeds from the car wash help our Troop attend Summer Camp, High Adventure Bases, and other activities
             </div>
           </>
         }
-        <div className="absolute text-blue-700 font-light right-1 bottom-1">
-         <Link to="./year/2021">Samples&nbsp;&rarr;</Link>
-        </div>
       </header>
       <main className="relative min-h-screen bg-blue-200 sm:flex sm:items-center sm:justify-center px-4">
         <div className="relative sm:pb-16 sm:pt-8">
