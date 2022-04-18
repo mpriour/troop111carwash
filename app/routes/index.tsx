@@ -7,16 +7,23 @@ import { getAds } from "~/models/ad.server";
 
 import { useOptionalUser } from "~/utils";
 
-type LoaderData = { ads: Array<Ad | null> };
+type LoaderData = {
+  splitAds: {
+    small: Array<Ad>;
+    medium: Array<Ad>;
+    large: Array<Ad>;
+  },
+  ads: Array<Ad>;
+};
 
 const gridPosition = (ad: Ad): string => {
   if (ad.size === 3) {
-    return (ad.orient === "p") ? "col-span-2 row-span-2" : "col-span-2 sm:col-span-4 row-span-2";
+    return (ad.orient === "p") ? "col-span-2 row-span-2 sm:col-span-1" : "col-span-2 row-span-1 sm:row-span-2";
   }
   if (ad.size === 2) {
-    return "col-span-2 row-span-1";
+    return "col-span-1 row-span-1";
   }
-  return "col-span-2 sm:col-span-1";
+  return "";
 }
 
 const pickLargeP = (remaining: Ad[], final: Array<Ad | null>) => {
@@ -73,10 +80,37 @@ const pickSmallP = (remaining: Ad[], final: Array<Ad | null>) => {
   return info.length;
 }
 
-const getAdsBySizeOrient = (ads: Ad[], size: number, orient: string, limit = 1): number[] => {
+const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
+  const info = getAdsBySizeOrient(remaining, 1);
+  info.forEach((ndx) => {
+    const pick = remaining.splice(ndx, 1);
+    final.push(pick[0])
+  })
+  return info.length;
+}
+
+const pickMedium = (remaining: Ad[], final: Array<Ad>) => {
+  const info = getAdsBySizeOrient(remaining, 2);
+  info.forEach((ndx) => {
+    const pick = remaining.splice(ndx, 1);
+    final.push(pick[0])
+  })
+  return info.length;
+}
+
+const pickLarge = (remaining: Ad[], final: Array<Ad>) => {
+  const info = getAdsBySizeOrient(remaining, 3);
+  info.forEach((ndx) => {
+    const pick = remaining.splice(ndx, 1);
+    final.push(pick[0])
+  })
+  return info.length;
+}
+
+const getAdsBySizeOrient = (ads: Ad[], size: number, orient?: string, limit = 1): number[] => {
   const results = [];
   while (results.length < limit) {
-    const i = ads.findIndex((ad) => ad.size === size && ad.orient == orient);
+    const i = ads.findIndex((ad) => ad.size === size && (orient ? ad.orient == orient : true));
     if (i === -1) {
       return results;
     }
@@ -136,12 +170,73 @@ const masonrySortType2 = (remaining: Ad[], final: Array<Ad | null>): number => {
   return c;
 }
 
+const getSmalls = (remaining: Ad[]) => {
+  const arr: Array<Ad> = [];
+  while (pickSmall(remaining, arr) > 0) {
+    continue;
+  }
+  return arr;
+}
+
+const getMediums = (remaining: Ad[]) => {
+  const arr: Array<Ad> = [];
+  while (pickMedium(remaining, arr) > 0) {
+    continue;
+  }
+  return arr;
+}
+
+const getLarges = (remaining: Ad[]) => {
+  const arr: Array<Ad> = [];
+  while (pickLarge(remaining, arr) > 0) {
+    continue;
+  }
+  return arr;
+}
+
+const cloudLimitsUrl = (ad: Ad): string => {
+  const parts = ad.imgUrl.split('upload/');
+  if (parts.length != 2) { return ad.imgUrl; }
+  let crop: string = 'c_fit';
+  switch (ad.size) {
+    case 1:
+      crop += ',w_250,h_250';
+      break;
+    case 2:
+      crop += (ad.orient == 'l' ? ',w_400' : ',h_400');
+      break;
+    case 3:
+      crop += (ad.orient == 'l' ? ',w_800' : ',h_800');
+      break;
+    default:
+      break;
+  }
+  return `${parts[0]}upload/${crop}/${parts[1]}`
+}
+
+const masonryStyles = (ad: Ad): string => {
+  let cn = 'mx-auto';
+  if (ad.size === 3) {
+    cn += (ad.orient == 'p' ? ' max-w-full max-h-full' : ' h-full');
+  }
+  else if (ad.size === 2) {
+    cn += (ad.orient == 'p' ? ' w-full' : ' h-full');
+  }
+  return cn;
+}
+
+const randomize = () => Math.round(Math.random()) - Math.round(Math.random())
+
 export const loader: LoaderFunction = async () => {
-  const sortedAds: Array<Ad | null> = [];
   const ads = await getAds({ year: 2021 });
-  masonrySort(ads, sortedAds)
+  //masonrySort(ads, sortedAds);
   return json<LoaderData>({
-    ads: sortedAds,
+    splitAds: {
+      small: getSmalls(ads).sort(randomize),
+      medium: getMediums(ads).sort(randomize),
+      large: getLarges(ads).sort(randomize),
+    },
+    ads
   });
 };
 
@@ -153,37 +248,62 @@ export default function Index() {
       <header className="w-full py-6 px-6 bg-yellow-400 flex justify-between items-center gap-x-2">
         {user ?
           <>
-          <div>
-            <h1 className="text-blue-700">Welcome {user.email}</h1>
-          </div>
+            <div>
+              <h1 className="text-blue-700">Welcome {user.email}</h1>
+            </div>
             <Link to="./ads/new" className="rounded bg-blue-600 py-2 px-4 text-white hover:bg-blue-800 focus:bg-blue-400">Create Ad</Link>
           </> :
           <>
-          <div>
-            <h1 className="text-blue-700 font-serif text-4xl font-semibold">Troop 111 Car Wash Sponsors</h1>
-          </div>
-          <div className="text-black font-sans sm:text-lg">
-            All proceeds from the car wash help our Troop attend Summer Camp, High Adventure Bases, and other activities
-          </div>
+            <div>
+              <h1 className="text-blue-700 font-serif text-4xl font-semibold">Troop 111 Car Wash Sponsors</h1>
+            </div>
+            <div className="text-black font-sans sm:text-lg">
+              All proceeds from the car wash help our Troop attend Summer Camp, High Adventure Bases, and other activities
+            </div>
           </>
-          }
+        }
       </header>
       <main className="relative min-h-screen bg-blue-200 sm:flex sm:items-center sm:justify-center px-4">
         <div className="relative sm:pb-16 sm:pt-8">
-          <div className="grid auto-rows-[360px] grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
-            {data.ads.map((ad, i) => (
-              ad === null ? <div key={i}></div> :
-                <div key={ad.id} className={`${gridPosition(ad)} rounded p-2 text-center`}>
-                  <h3 className="font-sans text-2xl text-gray-700">{ad.sponsor}</h3>
-                  <div className="h-[90%]">
-                    <img src={ad.imgUrl} alt="" className="h-full mx-auto" />
-                  </div>
-                  {ad.sponsorUrl.length > 0 ?
-                    <p><a href={`http://${ad.sponsorUrl}`} className="cursor-pointer text-blue-600" target="_blank" rel="noreferrer">{ad.sponsorUrl}</a></p> :
-                    null
-                  }
+          <div className="grid grid-cols-[75px_1fr] md:grid-cols-[300px_1fr] sm:gap-4">
+            <div className="sidebar">
+              {data.splitAds.small.map((smAd) => (
+                <div key={smAd.id} className="text-center">
+                  {smAd.sponsorUrl.length > 0 ? (
+                    <a href={smAd.sponsorUrl}>
+                      <h3 className="font-sans text-lg text-gray-700">{smAd.sponsor}</h3>
+                      <div className="max-h-[250px]">
+                        <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
+                      </div>
+                    </a>
+                  ) : (<>
+                    <h3 className="font-sans text-lg text-gray-700">{smAd.sponsor}</h3>
+                    <div className="max-h-[250px]">
+                      <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
+                    </div>
+                  </>)}
                 </div>
-            ))}
+              ))}
+            </div>
+            <div className="grid grid-cols-2 auto-rows-[150px] gap-2 sm:auto-rows-[400px] sm:gap-4">
+              {[...data.splitAds.large, ...data.splitAds.medium].map((ad, i) => (
+                <div className={`text-center ${gridPosition(ad)}`} key={ad.id ?? i}>
+                  {ad.sponsorUrl.length > 0 ? (
+                    <a href={ad.sponsorUrl}>
+                      <h3 className="font-sans text-lg text-gray-700">{ad.sponsor}</h3>
+                      <div className="h-[90%]">
+                        <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                      </div>
+                    </a>
+                  ) : (<>
+                    <h3 className="font-sans text-lg text-gray-700">{ad.sponsor}</h3>
+                    <div className="h-[90%]">
+                      <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                    </div>
+                  </>)}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>
