@@ -168,7 +168,7 @@ export default function Index() {
               {data.splitAds.small.map((smAd) => (
                 <div key={smAd.id} className="text-center my-2 sm:my-4">
                   {smAd.sponsorUrl.length > 0 ? (
-                    <a href={smAd.sponsorUrl}>
+                    <a href={`http://${smAd.sponsorUrl}`}>
                       <h3 className="font-sans font-semibold text-xs md:text-lg text-gray-700">{smAd.sponsor}</h3>
                       <div className="max-h-[250px]">
                         <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
@@ -187,7 +187,7 @@ export default function Index() {
               {[...data.splitAds.large, ...data.splitAds.medium].map((ad, i) => (
                 <div className={`text-center my-2 sm:my-0 ${gridPosition(ad)}`} key={ad.id ?? i}>
                   {ad.sponsorUrl.length > 0 ? (
-                    <a href={ad.sponsorUrl}>
+                    <a href={`http://${ad.sponsorUrl}`}>
                       <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{ad.sponsor}</h3>
                       <div className="h-[90%]">
                         <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
