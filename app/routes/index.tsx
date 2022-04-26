@@ -122,7 +122,7 @@ const gridPosition = (ad: Ad): string => {
 const randomize = () => Math.round(Math.random()) - Math.round(Math.random())
 
 export const loader: LoaderFunction = async () => {
-  const ads = await getAds({ year: 2021 });
+  const ads = await getAds({ year: 2022 });
   return json<LoaderData>({
     splitAds: {
       small: getSmalls(ads).sort(randomize),
