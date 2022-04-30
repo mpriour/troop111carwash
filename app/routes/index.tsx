@@ -119,7 +119,7 @@ const gridPosition = (ad: Ad): string => {
   return "";
 }
 
-const randomize = () => Math.round(Math.random()) - Math.round(Math.random())
+const randomize = () => Math.round(Math.random()*3) - Math.round(Math.random()*3)
 
 export const loader: LoaderFunction = async () => {
   const ads = await getAds({ year: 2022 });
@@ -184,7 +184,8 @@ export default function Index() {
               ))}
             </div>
             <div className="grid grid-cols-2 auto-rows-[150px] gap-2 sm:auto-rows-[400px] sm:gap-4">
-              {[...data.splitAds.large, ...data.splitAds.medium].map((ad, i) => (
+              {data.splitAds.large.map((ad, i) => (
+                <>
                 <div className={`text-center my-2 sm:my-0 ${gridPosition(ad)}`} key={ad.id ?? i}>
                   {ad.sponsorUrl.length > 0 ? (
                     <a href={`http://${ad.sponsorUrl}`}>
@@ -200,6 +201,24 @@ export default function Index() {
                     </div>
                   </>)}
                 </div>
+                {data.splitAds.medium.splice(0,2).map((mdAd, p) => (
+                  <div className={`text-center my-2 sm:my-0 ${gridPosition(mdAd)}`} key={mdAd.id ?? p}>
+                  {mdAd.sponsorUrl.length > 0 ? (
+                    <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full justify-between">
+                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
+                      <div>
+                        <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={masonryStyles(mdAd)} />
+                      </div>
+                    </a>
+                  ) : (<div className="flex flex-col h-full justify-between">
+                    <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
+                    <div>
+                      <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={masonryStyles(mdAd)} />
+                    </div>
+                  </div>)}
+                </div>
+                ))}
+                </>
               ))}
             </div>
           </div>
