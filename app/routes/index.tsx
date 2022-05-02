@@ -87,10 +87,10 @@ const cloudLimitsUrl = (ad: Ad): string => {
       crop += ',w_250,h_250';
       break;
     case 2:
-      crop += (ad.orient == 'l' ? ',w_400' : ',h_400');
+      crop += (ad.orient == 'l' ? ',w_400' : ',h_380');
       break;
     case 3:
-      crop += (ad.orient == 'l' ? ',w_800' : ',h_800');
+      crop += (ad.orient == 'l' ? ',w_800' : ',h_760');
       break;
     default:
       break;
@@ -104,7 +104,7 @@ const masonryStyles = (ad: Ad): string => {
     cn += (ad.orient == 'p' ? ' max-w-full max-h-full' : ' h-full');
   }
   else if (ad.size === 2) {
-    cn += (ad.orient == 'p' ? ' max-w-full sm:w-full' : ' max-h-full sm:h-full');
+    cn += (ad.orient == 'p' ? ' max-w-full'/* sm:w-full'*/ : ' max-h-full'/* sm:h-full'*/);
   }
   return cn;
 }
