@@ -17,6 +17,13 @@ function sizeToString(sz:number){
  return sz === 3 ? "large" : sz === 2 ? "medium" : "small"
 }
 
+const cloudLimitsUrl = (ad: Ad): string => {
+  const parts = ad.imgUrl.split('upload/');
+  if (parts.length != 2) { return ad.imgUrl; }
+  const crop: string = 'c_fit,w_40,h_40';
+  return `${parts[0]}upload/${crop}/${parts[1]}`
+}
+
 export const loader: LoaderFunction = async ({ request }) => {
   //const userId = await requireUserId(request);
   const adItems = await getAllAds();
@@ -51,7 +58,7 @@ export default function AdsPage() {
               ad.sponsor
               }
             </p>
-            <img src={ad.imgUrl} alt="" className="aspect-video w-40" />
+            <img src={cloudLimitsUrl(ad)} alt="" className="w-40 h-auto" />
             <p>{sizeToString(ad.size)}</p>
           </div>
         </li>
