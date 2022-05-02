@@ -104,7 +104,7 @@ const masonryStyles = (ad: Ad): string => {
     cn += (ad.orient == 'p' ? ' max-w-full max-h-full' : ' h-full');
   }
   else if (ad.size === 2) {
-    cn += (ad.orient == 'p' ? ' max-w-full'/* sm:w-full'*/ : ' max-h-full'/* sm:h-full'*/);
+    cn += (ad.orient == 'p' ? ' max-w-full max-h-[90%] sm:max-h-full' : ' max-h-full');
   }
   return cn;
 }
