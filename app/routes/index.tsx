@@ -81,7 +81,7 @@ const getLarges = (remaining: Ad[]) => {
 const cloudLimitsUrl = (ad: Ad): string => {
   const parts = ad.imgUrl.split('upload/');
   if (parts.length != 2) { return ad.imgUrl; }
-  let crop: string = 'c_fit';
+  let crop: string = 'c_fit,f_auto';
   switch (ad.size) {
     case 1:
       crop += ',w_250,h_250';
