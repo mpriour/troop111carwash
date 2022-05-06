@@ -104,7 +104,7 @@ const masonryStyles = (ad: Ad): string => {
     cn += (ad.orient == 'p' ? ' max-w-full max-h-full' : ' h-full');
   }
   else if (ad.size === 2) {
-    cn += (ad.orient == 'p' ? ' max-w-full max-h-[120px] sm:max-h-full' : ' max-h-full');
+    cn += (ad.orient == 'p' ? ' max-w-full max-h-[100px] sm:max-h-full' : ' max-h-full');
   }
   return cn;
 }
@@ -168,8 +168,8 @@ export default function Index() {
               {data.splitAds.small.map((smAd) => (
                 <div key={smAd.id} className="text-center my-2 sm:my-4">
                   {smAd.sponsorUrl.length > 0 ? (
-                    <a href={`http://${smAd.sponsorUrl}`}>
-                      <h3 className="font-sans font-semibold text-xs md:text-lg text-gray-700">{smAd.sponsor}</h3>
+                    <a href={`http://${smAd.sponsorUrl}`} className="underline decoration-blue-800">
+                      <h3 className="font-sans font-semibold text-xs md:text-lg text-blue-800">{smAd.sponsor}</h3>
                       <div className="max-h-[250px]">
                         <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
                       </div>
@@ -188,8 +188,8 @@ export default function Index() {
                 <>
                 <div className={`text-center my-2 sm:my-0 ${gridPosition(ad)}`} key={ad.id ?? i}>
                   {ad.sponsorUrl.length > 0 ? (
-                    <a href={`http://${ad.sponsorUrl}`}>
-                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{ad.sponsor}</h3>
+                    <a href={`http://${ad.sponsorUrl}`} className="underline decoration-blue-800">
+                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{ad.sponsor}</h3>
                       <div className="h-[90%]">
                         <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
                       </div>
@@ -204,16 +204,16 @@ export default function Index() {
                 {data.splitAds.medium.splice(0,2).map((mdAd, p) => (
                   <div className={`text-center my-2 sm:my-0 ${gridPosition(mdAd)}`} key={mdAd.id ?? p}>
                   {mdAd.sponsorUrl.length > 0 ? (
-                    <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full justify-between">
-                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
-                      <div>
-                        <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={masonryStyles(mdAd)} />
+                    <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full underline decoration-blue-800">
+                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{mdAd.sponsor}</h3>
+                      <div className="flex h-full">
+                        <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
                       </div>
                     </a>
-                  ) : (<div className="flex flex-col h-full justify-between">
+                  ) : (<div className="flex flex-col h-full">
                     <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
-                    <div>
-                      <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={masonryStyles(mdAd)} />
+                    <div className="flex h-full">
+                      <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
                     </div>
                   </div>)}
                 </div>
