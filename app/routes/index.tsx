@@ -157,9 +157,6 @@ export default function Index() {
             </div>
           </>
         }
-        <div className="absolute text-blue-700 font-light right-1 bottom-1">
-         <Link to="./year/2021">Samples&nbsp;&rarr;</Link>
-        </div>
       </header>
       <main className="relative min-h-screen bg-blue-200 sm:flex sm:items-center sm:justify-center px-4">
         <div className="relative sm:pb-16 sm:pt-8">
