@@ -11,12 +11,11 @@ type ActionData = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const uploadHandler: UploadHandler = async ({ name, stream }) => {
+  const uploadHandler: UploadHandler = async ({ name, data }) => {
     if (name !== "img") {
-      stream.resume();
       return;
     }
-    const uploadedImage = await uploadImage(stream);
+    const uploadedImage = await uploadImage(data);
     return uploadedImage?.secure_url;
   };
 

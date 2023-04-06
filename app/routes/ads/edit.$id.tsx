@@ -94,7 +94,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function EditAdPage() {
   const actionData = useActionData() as ActionData;
-  const { ad } = useLoaderData() as LoaderData;
+  const { ad } = useLoaderData<LoaderData>();
 
   return (
     <Form

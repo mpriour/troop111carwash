@@ -139,7 +139,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
 };
 
 export default function Index() {
-  const data = useLoaderData() as LoaderData;
+  const data = useLoaderData<LoaderData>();
   const user = useOptionalUser();
   return (
     <>

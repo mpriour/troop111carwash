@@ -31,7 +31,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function AdsPage() {
-  const { adItems } = useLoaderData() as LoaderData;
+  const { adItems } = useLoaderData<LoaderData>();
   const adsByYear: AdsByYear = {}
   adItems.forEach((ad) => {
     const {year} = ad;

@@ -1,5 +1,5 @@
 import cloudinary from "cloudinary";
-import type { Stream } from "stream";
+import { writeAsyncIterableToWritable } from "@remix-run/node";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -7,7 +7,7 @@ cloudinary.v2.config({
   api_secret: process.env.API_SECRET,
 });
 
-async function uploadImage(fileStream: Stream) {
+async function uploadImage(data: AsyncIterable<Uint8Array>) {
   return new Promise<cloudinary.UploadApiResponse | undefined>((resolve, reject) => {
     const uploadStream = cloudinary.v2.uploader.upload_stream(
       {
@@ -20,7 +20,7 @@ async function uploadImage(fileStream: Stream) {
         resolve(result);
       }
     );
-    fileStream.pipe(uploadStream);
+    writeAsyncIterableToWritable(data, uploadStream);
   });
 }
 

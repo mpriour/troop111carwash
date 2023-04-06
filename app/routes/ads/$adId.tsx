@@ -39,7 +39,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function AdDetailsPage() {
-  const {ad} = useLoaderData() as LoaderData;
+  const {ad} = useLoaderData<LoaderData>();
 
   return (
     <div>
