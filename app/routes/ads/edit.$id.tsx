@@ -5,7 +5,7 @@ import * as React from "react";
 import invariant from "tiny-invariant";
 
 import type { Ad } from "~/models/ad.server";
-import { editAd, getAd } from "~/models/ad.server";
+import { editAd, getAd, createAd } from "~/models/ad.server";
 import { requireUserId } from "~/session.server";
 
 type ActionData = {
@@ -37,6 +37,7 @@ export const action: ActionFunction = async ({ request }) => {
   await requireUserId(request);
   const formData = await request.formData();
   const id = formData.get("id") as string;
+  const clone = formData.get("clone");
   const sponsor = formData.get("sponsor");
   const size = formData.get("size");
   const sponsorUrl = formData.get("sponsorUrl");
@@ -79,6 +80,18 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
+  if(clone){
+    const newAd = await createAd({
+      sponsor,
+      imgUrl,
+      size: parseInt(size),
+      year: parseInt(year) + 1,
+      orient,
+      sponsorUrl: (sponsorUrl as string) || ""
+    })
+    return redirect(`/ads/edit/${newAd.id}`);
+  }
+
   await editAd({
     id,
     sponsor,
@@ -89,7 +102,7 @@ export const action: ActionFunction = async ({ request }) => {
     sponsorUrl: (sponsorUrl as string) || ""
   });
 
-  return redirect(`/ads`);
+  return redirect(`/ads?year=${parseInt(year)}`);
 };
 
 export default function EditAdPage() {
@@ -212,6 +225,17 @@ export default function EditAdPage() {
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
         >
           Save
+        </button>
+      </div>
+      
+      <div className="text-left">
+        <button
+          type="submit"
+          name="clone"
+          value="1"
+          className="rounded bg-green-500 py-2 px-4 text-white hover:bg-green-600 focus:bg-green-400"
+        >
+          Duplicate
         </button>
       </div>
     </Form>

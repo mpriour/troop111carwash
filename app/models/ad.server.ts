@@ -21,7 +21,7 @@ export function getAd({
 export function getAds({ year }: { year: Ad["year"] }) {
   return prisma.ad.findMany({
     where: { year },
-    orderBy: { updatedAt: "desc" },
+    orderBy: { updatedAt: "asc" },
   });
 }
 

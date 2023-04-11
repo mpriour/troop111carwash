@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, /* NavLink, Outlet, */ useLoaderData } from "@remix-run/react";
 
-import type { Ad } from "~/models/ad.server";
+import { Ad, getAds } from "~/models/ad.server";
 //import { requireUserId } from "~/session.server";
 import { getAllAds } from "~/models/ad.server";
 
@@ -26,7 +26,13 @@ const cloudLimitsUrl = (ad: Ad): string => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   //const userId = await requireUserId(request);
-  const adItems = await getAllAds();
+  let adItems: Ad[];
+  const {searchParams} = new URL(request.url);
+  if(searchParams.has('year')){
+    adItems = await getAds({year:parseInt(searchParams.get('year')!)})
+  } else {
+    adItems = await getAllAds();
+  }
   return json<LoaderData>({ adItems });
 };
 
