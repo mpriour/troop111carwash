@@ -2,9 +2,9 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, /* NavLink, Outlet, */ useLoaderData } from "@remix-run/react";
 
-import { Ad, getAds } from "~/models/ad.server";
+import type { Ad } from "~/models/ad.server";
 //import { requireUserId } from "~/session.server";
-import { getAllAds } from "~/models/ad.server";
+import { getAllAds, getAds } from "~/models/ad.server";
 
 type LoaderData = {
   adItems: Awaited<ReturnType<typeof getAllAds>>;
