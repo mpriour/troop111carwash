@@ -119,7 +119,7 @@ export default function NewAdPage() {
         width: "100%",
       }}
     >
-      {!actionData?.imgSrc || actionData?.error?.id === "img_upload" ?
+      {/* {!actionData?.imgSrc || actionData?.error?.id === "img_upload" ?
         <div>
           <label className="flex w-full flex-col gap-1">
             <span>Image to Upload: </span>
@@ -139,26 +139,26 @@ export default function NewAdPage() {
               {actionData.error.msg}
             </div>
           )}
-        </div> :
+        </div> : */}
         <div>
           <label className="flex w-full flex-col gap-1">
             <span>Img URL: </span>
             <input
               name="imgUrl"
-              value={actionData.imgSrc}
-              readOnly={true}
+              /* value={actionData.imgSrc}
+              readOnly={true} */
               className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
             />
           </label>
-          {actionData?.error?.id == "imgUrl" ? (
+          {/* {actionData?.error?.id == "imgUrl" ? (
             <div className="pt-1 text-red-700" id="imgUrl-error">
               {actionData.error.msg}
             </div>
           ) : (
             <div><img src={actionData.imgSrc} alt="" /></div>
-          )}
+          )} */}
         </div>
-      }
+      {/* } */}
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Sponsor: </span>
@@ -189,7 +189,7 @@ export default function NewAdPage() {
           <span>Year: </span>
           <input
             name="year"
-            defaultValue={"2022"}
+            defaultValue={"2023"}
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           />
         </label>
