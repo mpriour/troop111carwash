@@ -189,7 +189,7 @@ export default function NewAdPage() {
           <span>Year: </span>
           <input
             name="year"
-            defaultValue={"2023"}
+            defaultValue={"2024"}
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           />
         </label>

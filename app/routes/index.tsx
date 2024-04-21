@@ -15,6 +15,8 @@ type LoaderData = {
   }
 };
 
+const TARGET_YEAR = 2024;
+
 const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
   const info = getAdsBySizeOrient(remaining, 1);
   info.forEach((ndx) => {
@@ -122,7 +124,7 @@ const gridPosition = (ad: Ad): string => {
 const randomize = () => Math.round(Math.random()*3) - Math.round(Math.random()*3)
 
 export const loader: LoaderFunction = async () => {
-  const ads = await getAds({ year: 2023 });
+  const ads = await getAds({ year: TARGET_YEAR });
   return json<LoaderData>({
     splitAds: {
       small: getSmalls(ads).sort(randomize),
