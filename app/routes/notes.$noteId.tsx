@@ -1,11 +1,6 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import {
-  Form,
-  isRouteErrorResponse,
-  useLoaderData,
-  useRouteError,
-} from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { redirect } from "react-router";
+import { Form, isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
 import invariant from "tiny-invariant";
 
 import { deleteNote, getNote } from "~/models/note.server";
