@@ -1,7 +1,8 @@
-app = "troop111carwash"
+app = "carwash2-04d1"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
+swap_size_mb = 512
 
 [experimental]
 allowed_public_ports = [ ]
@@ -40,11 +41,11 @@ script_checks = [ ]
   timeout = "2s"
 
   [[services.http_checks]]
-  interval = 10_000
+  interval = "10s"
   grace_period = "5s"
   method = "get"
   path = "/healthcheck"
   protocol = "http"
-  timeout = 2_000
+  timeout = "2s"
   tls_skip_verify = false
   headers = { }

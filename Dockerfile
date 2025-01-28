@@ -1,5 +1,5 @@
 # base node image
-FROM node:16-bullseye-slim as base
+FROM node:18-bullseye-slim as base
 
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
@@ -12,8 +12,8 @@ FROM base as deps
 
 WORKDIR /myapp
 
-ADD package.json package-lock.json ./
-RUN npm install --production=false
+ADD package.json package-lock.json .npmrc ./
+RUN npm install --include=dev
 
 # Setup production node_modules
 FROM base as production-deps
@@ -21,8 +21,8 @@ FROM base as production-deps
 WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
-ADD package.json package-lock.json ./
-RUN npm prune --production
+ADD package.json package-lock.json .npmrc ./
+RUN npm prune --omit=dev
 
 # Build the app
 FROM base as build
@@ -54,6 +54,8 @@ COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 
 COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
-ADD . .
+COPY --from=build /myapp/package.json /myapp/package.json
+COPY --from=build /myapp/start.sh /myapp/start.sh
+COPY --from=build /myapp/prisma /myapp/prisma
 
-CMD ["npm", "start"]
+ENTRYPOINT [ "./start.sh" ]

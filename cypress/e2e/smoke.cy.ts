@@ -1,7 +1,7 @@
-import faker from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 
 describe("smoke tests", () => {
-/*   afterEach(() => {
+  afterEach(() => {
     cy.cleanupUser();
   });
 
@@ -10,9 +10,11 @@ describe("smoke tests", () => {
       email: `${faker.internet.userName()}@example.com`,
       password: faker.internet.password(),
     };
+
     cy.then(() => ({ email: loginForm.email })).as("user");
 
-    cy.visit("/login");
+    cy.visitAndCheck("/");
+
     cy.findByRole("link", { name: /sign up/i }).click();
 
     cy.findByRole("textbox", { name: /email/i }).type(loginForm.email);
@@ -22,15 +24,16 @@ describe("smoke tests", () => {
     cy.findByRole("link", { name: /notes/i }).click();
     cy.findByRole("button", { name: /logout/i }).click();
     cy.findByRole("link", { name: /log in/i });
-  }); */
-/*
+  });
+
   it("should allow you to make a note", () => {
     const testNote = {
       title: faker.lorem.words(1),
       body: faker.lorem.sentences(1),
     };
     cy.login();
-    cy.visit("/");
+
+    cy.visitAndCheck("/");
 
     cy.findByRole("link", { name: /notes/i }).click();
     cy.findByText("No notes yet");
@@ -44,5 +47,5 @@ describe("smoke tests", () => {
     cy.findByRole("button", { name: /delete/i }).click();
 
     cy.findByText("No notes yet");
-  }); */
+  });
 });

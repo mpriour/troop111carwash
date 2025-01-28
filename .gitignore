@@ -1,5 +1,4 @@
 node_modules
-.DS_Store
 
 /build
 /public/build
@@ -9,5 +8,3 @@ node_modules
 /cypress/videos
 /prisma/data.db
 /prisma/data.db-journal
-
-/app/styles/tailwind.css
