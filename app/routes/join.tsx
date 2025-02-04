@@ -1,7 +1,6 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "react-router";
-import { redirect } from "react-router";
-import { Form, Link, useActionData, useSearchParams } from "react-router";
 import { useEffect, useRef } from "react";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "react-router";
+import { redirect , Form, Link, useActionData, useSearchParams } from "react-router";
 
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
