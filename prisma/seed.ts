@@ -40,6 +40,17 @@ async function seed() {
     },
   });
 
+  await prisma.ad.create({
+    data: {
+      sponsor: "Test sponsor",
+      imgUrl: "https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg",
+      size: 3,
+      sponsorUrl: "https://google.com",
+      year: 2021,
+      orient: "l"
+    }
+  })
+
   console.log(`Database has been seeded. 🌱`);
 }
 

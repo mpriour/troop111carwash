@@ -24,7 +24,7 @@
     "/public/build"
   ],
   "dependencies": {
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "^6.3.0",
     "@react-router/node": "^7.0.0",
     "@react-router/serve": "^7.0.0",
     "bcryptjs": "^2.4.3",
