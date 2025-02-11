@@ -1,6 +1,5 @@
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "react-router"
+import { Link, useLoaderData } from "react-router";
 
 import type { Ad } from "~/models/ad.server";
 import { getAds } from "~/models/ad.server";
@@ -124,13 +123,13 @@ const randomize = () => Math.round(Math.random()*3) - Math.round(Math.random()*3
 
 export const loader: LoaderFunction = async () => {
   const ads = await getAds({ year: TARGET_YEAR });
-  return json<LoaderData>({
+  return {
     splitAds: {
       small: getSmalls(ads).sort(randomize),
       medium: getMediums(ads).sort(randomize),
       large: getLarges(ads).sort(randomize),
     }
-  });
+  };
 };
 
 export default function Index() {
