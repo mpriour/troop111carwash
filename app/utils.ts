@@ -1,5 +1,5 @@
-import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
+import { useMatches } from "react-router";
 
 import type { User } from "~/models/user.server";
 
@@ -44,4 +44,8 @@ export function useUser(): User {
 
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
+}
+
+export function safeRedirect(redirectTo: unknown, fallback: string): string {
+  return redirectTo && typeof redirectTo == "string" && !redirectTo.includes("//") ? redirectTo : fallback;
 }

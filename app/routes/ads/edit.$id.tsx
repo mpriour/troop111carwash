@@ -1,23 +1,21 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import * as React from "react";
+import type { ActionFunction, LoaderFunction } from "react-router";
+import { redirect , Form, useActionData, useLoaderData, data } from "react-router";
 import invariant from "tiny-invariant";
 
 import type { Ad } from "~/models/ad.server";
 import { editAd, getAd, createAd } from "~/models/ad.server";
 import { requireUserId } from "~/session.server";
 
-type ActionData = {
+interface ActionData {
   error?: {
     msg: string;
     id: string;
   }
-};
+}
 
-type LoaderData = {
+interface LoaderData {
   ad: Ad;
-};
+}
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
@@ -30,7 +28,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!ad) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>({ ad });
+  return { ad };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -46,35 +44,35 @@ export const action: ActionFunction = async ({ request }) => {
   const year = formData.get("year");
 
   if (typeof sponsor !== "string" || sponsor.length === 0) {
-    return json<ActionData>(
+    return data<ActionData>(
       { error: { msg: "Sponsor is required", id: "sponsor" } },
       { status: 400 }
     );
   }
 
   if (typeof size !== "string" || size.length === 0) {
-    return json<ActionData>(
+    return data<ActionData>(
       { error: { msg: "Size is required", id: "size" } },
       { status: 400 }
     );
   }
 
   if (typeof orient !== "string" || orient.length === 0) {
-    return json<ActionData>(
+    return data<ActionData>(
       { error: { msg: "Orientation is required", id: "orient" } },
       { status: 400 }
     );
   }
 
   if (typeof imgUrl !== "string" || imgUrl.length === 0) {
-    return json<ActionData>(
+    return data<ActionData>(
       { error: { msg: "Image URL is required", id: "imgUrl" } },
       { status: 400 }
     );
   }
 
   if (typeof year !== "string" || year.length === 0) {
-    return json<ActionData>(
+    return data<ActionData>(
       { error: { msg: "Year is required", id: "year" } },
       { status: 400 }
     );
@@ -144,11 +142,9 @@ export default function EditAdPage() {
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           />
         </label>
-        {actionData?.error?.id == "sponsor" && (
-          <div className="pt-1 text-red-700" id="sponsor-error">
+        {actionData?.error?.id == "sponsor" ? <div className="pt-1 text-red-700" id="sponsor-error">
             {actionData.error.msg}
-          </div>
-        )}
+          </div> : null}
       </div>
 
       <div>
@@ -171,11 +167,9 @@ export default function EditAdPage() {
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           />
         </label>
-        {actionData?.error?.id == "year" && (
-          <div className="pt-1 text-red-700" id="year-error">
+        {actionData?.error?.id == "year" ? <div className="pt-1 text-red-700" id="year-error">
             {actionData.error.msg}
-          </div>
-        )}
+          </div> : null}
       </div>
 
       <div>
@@ -192,11 +186,9 @@ export default function EditAdPage() {
             <option value="3">LARGE</option>
           </select>
         </label>
-        {actionData?.error?.id == "size" && (
-          <div className="pt-1 text-red-700" id="size-error">
+        {actionData?.error?.id == "size" ? <div className="pt-1 text-red-700" id="size-error">
             {actionData.error.msg}
-          </div>
-        )}
+          </div> : null}
       </div>
 
       <div>
@@ -212,11 +204,9 @@ export default function EditAdPage() {
             <option value="p">Portrait</option>
           </select>
         </label>
-        {actionData?.error?.id == "orient" && (
-          <div className="pt-1 text-red-700" id="orient-error">
+        {actionData?.error?.id == "orient" ? <div className="pt-1 text-red-700" id="orient-error">
             {actionData.error.msg}
-          </div>
-        )}
+          </div> : null}
       </div>
 
       <div className="text-right">

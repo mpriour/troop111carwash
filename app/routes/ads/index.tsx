@@ -1,17 +1,13 @@
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Link, /* NavLink, Outlet, */ useLoaderData } from "@remix-run/react";
+import { Link, LoaderFunction, /* NavLink, Outlet, */ useLoaderData } from "react-router";
 
 import type { Ad } from "~/models/ad.server";
 //import { requireUserId } from "~/session.server";
 import { getAllAds, getAds } from "~/models/ad.server";
 
-type LoaderData = {
+interface LoaderData {
   adItems: Awaited<ReturnType<typeof getAllAds>>;
-};
-type AdsByYear = {
-  [key: number]: Ad[];
 }
+type AdsByYear = Record<number, Ad[]>;
 
 function sizeToString(sz:number){
  return sz === 3 ? "large" : sz === 2 ? "medium" : "small"
@@ -20,7 +16,7 @@ function sizeToString(sz:number){
 const cloudLimitsUrl = (ad: Ad): string => {
   const parts = ad.imgUrl.split('upload/');
   if (parts.length != 2) { return ad.imgUrl; }
-  const crop: string = 'c_fit,w_40,h_40';
+  const crop = 'c_fit,w_40,h_40';
   return `${parts[0]}upload/${crop}/${parts[1]}`
 }
 
@@ -33,7 +29,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   } else {
     adItems = await getAllAds();
   }
-  return json<LoaderData>({ adItems });
+  return { adItems };
 };
 
 export default function AdsPage() {
