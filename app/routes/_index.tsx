@@ -1,6 +1,7 @@
 import type { LoaderFunction } from "react-router"
 import { Link, useLoaderData } from "react-router";
 
+import { DEFAULT_YEAR } from "~/constants";
 import type { Ad } from "~/models/ad.server";
 import { getAds } from "~/models/ad.server";
 import { useOptionalUser } from "~/utils";
@@ -12,8 +13,6 @@ interface LoaderData {
     large: Ad[];
   }
 }
-
-const TARGET_YEAR = 2024;
 
 const pickSmall = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 1);
@@ -122,7 +121,7 @@ const gridPosition = (ad: Ad): string => {
 const randomize = () => Math.round(Math.random()*3) - Math.round(Math.random()*3)
 
 export const loader: LoaderFunction = async () => {
-  const ads = await getAds({ year: TARGET_YEAR });
+  const ads = await getAds({ year: DEFAULT_YEAR });
   return {
     splitAds: {
       small: getSmalls(ads).sort(randomize),

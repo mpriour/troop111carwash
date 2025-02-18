@@ -2,6 +2,7 @@ import { FileUpload, parseFormData } from "@mjackson/form-data-parser";
 import type { ActionFunction } from "react-router";
 import { redirect, Form, useActionData, data } from "react-router";
 
+import { DEFAULT_YEAR } from "~/constants";
 import { createAd } from "~/models/ad.server";
 import { requireUserId } from "~/session.server";
 import { uploadImage } from "~/utils/utils.server";
@@ -179,7 +180,7 @@ export default function NewAdPage() {
           <span>Year: </span>
           <input
             name="year"
-            defaultValue={"2024"}
+            defaultValue={DEFAULT_YEAR}
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           />
         </label>
