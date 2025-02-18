@@ -102,12 +102,7 @@ export default function NewAdPage() {
   return (
     <Form
       method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%"
-      }}
+      className="flex flex-col gap-2 mx-auto p-6 max-w-2xl"
     >
       {!actionData?.imgSrc || actionData?.error?.id === "img_upload" ? (
         <div>
