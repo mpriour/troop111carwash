@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  server: { port: 3000 },
+  server: { port: process.env.NODE_ENV === "production" ? 8080 : 3000 },
   plugins: [
     reactRouter(),
     tsconfigPaths()
