@@ -1,5 +1,5 @@
+import { writeAsyncIterableToWritable } from "@react-router/node";
 import cloudinary from "cloudinary";
-import { writeAsyncIterableToWritable } from "@remix-run/node";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -7,7 +7,20 @@ cloudinary.v2.config({
   api_secret: process.env.API_SECRET,
 });
 
-async function uploadImage(data: AsyncIterable<Uint8Array>) {
+async function* streamToAsyncIterator(stream: ReadableStream<Uint8Array>) {
+  const reader = stream.getReader();
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      yield value;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+async function uploadImage(data: ReadableStream<Uint8Array>) {
   return new Promise<cloudinary.UploadApiResponse | undefined>((resolve, reject) => {
     const uploadStream = cloudinary.v2.uploader.upload_stream(
       {
@@ -20,7 +33,8 @@ async function uploadImage(data: AsyncIterable<Uint8Array>) {
         resolve(result);
       }
     );
-    writeAsyncIterableToWritable(data, uploadStream);
+    
+    writeAsyncIterableToWritable(streamToAsyncIterator(data), uploadStream);
   });
 }
 

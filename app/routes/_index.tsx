@@ -1,23 +1,20 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "react-router"
+import { Link, useLoaderData } from "react-router";
 
+import { DEFAULT_YEAR } from "~/constants";
 import type { Ad } from "~/models/ad.server";
 import { getAds } from "~/models/ad.server";
+import { formatCloudUrl, useOptionalUser } from "~/utils";
 
-import { useOptionalUser } from "~/utils";
-
-type LoaderData = {
+interface LoaderData {
   splitAds: {
-    small: Array<Ad>;
-    medium: Array<Ad>;
-    large: Array<Ad>;
+    small: Ad[];
+    medium: Ad[];
+    large: Ad[];
   }
-};
+}
 
-const TARGET_YEAR = 2024;
-
-const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
+const pickSmall = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 1);
   info.forEach((ndx) => {
     const pick = remaining.splice(ndx, 1);
@@ -26,7 +23,7 @@ const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
   return info.length;
 }
 
-const pickMedium = (remaining: Ad[], final: Array<Ad>) => {
+const pickMedium = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 2);
   info.forEach((ndx) => {
     const pick = remaining.splice(ndx, 1);
@@ -35,7 +32,7 @@ const pickMedium = (remaining: Ad[], final: Array<Ad>) => {
   return info.length;
 }
 
-const pickLarge = (remaining: Ad[], final: Array<Ad>) => {
+const pickLarge = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 3);
   info.forEach((ndx) => {
     const pick = remaining.splice(ndx, 1);
@@ -57,7 +54,7 @@ const getAdsBySizeOrient = (ads: Ad[], size: number, orient?: string, limit = 1)
 }
 
 const getSmalls = (remaining: Ad[]) => {
-  const arr: Array<Ad> = [];
+  const arr: Ad[] = [];
   while (pickSmall(remaining, arr) > 0) {
     continue;
   }
@@ -65,7 +62,7 @@ const getSmalls = (remaining: Ad[]) => {
 }
 
 const getMediums = (remaining: Ad[]) => {
-  const arr: Array<Ad> = [];
+  const arr: Ad[] = [];
   while (pickMedium(remaining, arr) > 0) {
     continue;
   }
@@ -73,31 +70,11 @@ const getMediums = (remaining: Ad[]) => {
 }
 
 const getLarges = (remaining: Ad[]) => {
-  const arr: Array<Ad> = [];
+  const arr: Ad[] = [];
   while (pickLarge(remaining, arr) > 0) {
     continue;
   }
   return arr;
-}
-
-const cloudLimitsUrl = (ad: Ad): string => {
-  const parts = ad.imgUrl.split('upload/');
-  if (parts.length != 2) { return ad.imgUrl; }
-  let crop: string = 'c_fit,f_auto';
-  switch (ad.size) {
-    case 1:
-      crop += ',w_250,h_250';
-      break;
-    case 2:
-      crop += (ad.orient == 'l' ? ',w_400' : ',h_380');
-      break;
-    case 3:
-      crop += (ad.orient == 'l' ? ',w_800' : ',h_760');
-      break;
-    default:
-      break;
-  }
-  return `${parts[0]}upload/${crop}/${parts[1]}`
 }
 
 const masonryStyles = (ad: Ad): string => {
@@ -124,14 +101,14 @@ const gridPosition = (ad: Ad): string => {
 const randomize = () => Math.round(Math.random()*3) - Math.round(Math.random()*3)
 
 export const loader: LoaderFunction = async () => {
-  const ads = await getAds({ year: TARGET_YEAR });
-  return json<LoaderData>({
+  const ads = await getAds({ year: DEFAULT_YEAR });
+  return {
     splitAds: {
       small: getSmalls(ads).sort(randomize),
       medium: getMediums(ads).sort(randomize),
       large: getLarges(ads).sort(randomize),
     }
-  });
+  };
 };
 
 export default function Index() {
@@ -170,13 +147,13 @@ export default function Index() {
                     <a href={`http://${smAd.sponsorUrl}`} className="underline decoration-blue-800">
                       <h3 className="font-sans font-semibold text-xs md:text-lg text-blue-800">{smAd.sponsor}</h3>
                       <div className="max-h-[250px]">
-                        <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
+                        <img src={formatCloudUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
                       </div>
                     </a>
                   ) : (<>
                     <h3 className="font-sans font-semibold text-xs md:text-lg text-gray-700">{smAd.sponsor}</h3>
                     <div className="max-h-[250px]">
-                      <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
+                      <img src={formatCloudUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
                     </div>
                   </>)}
                 </div>
@@ -190,13 +167,13 @@ export default function Index() {
                     <a href={`http://${ad.sponsorUrl}`} className="underline decoration-blue-800">
                       <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{ad.sponsor}</h3>
                       <div className="h-[90%]">
-                        <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                        <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
                       </div>
                     </a>
                   ) : (<>
                     <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{ad.sponsor}</h3>
                     <div className="h-[90%]">
-                      <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                      <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
                     </div>
                   </>)}
                 </div>
@@ -206,13 +183,13 @@ export default function Index() {
                     <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full underline decoration-blue-800">
                       <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{mdAd.sponsor}</h3>
                       <div className="flex h-full">
-                        <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
+                        <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
                       </div>
                     </a>
                   ) : (<div className="flex flex-col h-full">
                     <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
                     <div className="flex h-full">
-                      <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
+                      <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
                     </div>
                   </div>)}
                 </div>

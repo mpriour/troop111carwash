@@ -1,39 +1,40 @@
-import type { ActionFunction, UploadHandler } from "@remix-run/node";
-import { json, unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { FileUpload, parseFormData } from "@mjackson/form-data-parser";
+import type { ActionFunction } from "react-router";
+import { Form, useActionData } from "react-router";
 
 import { uploadImage } from "~/utils/utils.server";
 
-type ActionData = {
+interface ActionData {
   errorMsg?: string;
   imgSrc?: string;
   imgDesc?: string;
-};
+}
 
 export const action: ActionFunction = async ({ request }) => {
-  const uploadHandler: UploadHandler = async ({ name, data }) => {
-    if (name !== "img") {
+  const uploadHandler = async (fileUpload: FileUpload) => {
+    if (fileUpload.fieldName !== "img") {
       return;
     }
-    const uploadedImage = await uploadImage(data);
+    
+    const uploadedImage = await uploadImage(fileUpload.stream());
     return uploadedImage?.secure_url;
   };
 
-  const formData = await unstable_parseMultipartFormData(
+  const formData = await parseFormData(
     request,
     uploadHandler
   );
   const imgSrc = formData.get("img");
   const imgDesc = formData.get("desc");
   if (!imgSrc) {
-    return json({
+    return {
       error: "something wrong",
-    });
+    };
   }
-  return json({
+  return {
     imgSrc,
     imgDesc,
-  });
+  };
 };
 
 export default function Index() {
@@ -47,13 +48,11 @@ export default function Index() {
         <input id="img-desc" type="text" name="desc" />
         <button type="submit">upload to cloudinary</button>
       </Form>
-      {data?.errorMsg && <h2>{data.errorMsg}</h2>}
-      {data?.imgSrc && (
-        <>
+      {data?.errorMsg ? <h2>{data.errorMsg}</h2> : null}
+      {data?.imgSrc ? <>
           <h2>uploaded image</h2>
           <img src={data.imgSrc} alt={data.imgDesc || "Upload result"} />
-        </>
-      )}
+        </> : null}
     </>
   );
 }

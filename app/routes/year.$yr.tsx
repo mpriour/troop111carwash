@@ -1,22 +1,18 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
-
-import type { Ad } from "~/models/ad.server";
-import { getAds } from "~/models/ad.server";
-
-import { useOptionalUser } from "~/utils";
+import { Link, useLoaderData, LoaderFunction } from "react-router";
 import invariant from "tiny-invariant";
 
-type LoaderData = {
-  splitAds: {
-    small: Array<Ad>;
-    medium: Array<Ad>;
-    large: Array<Ad>;
-  }
-};
+import { Ad, getAds } from "~/models/ad.server";
+import { useOptionalUser } from "~/utils";
 
-const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
+interface LoaderData {
+  splitAds: {
+    small: Ad[];
+    medium: Ad[];
+    large: Ad[];
+  }
+}
+
+const pickSmall = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 1);
   info.forEach((ndx) => {
     const pick = remaining.splice(ndx, 1);
@@ -25,7 +21,7 @@ const pickSmall = (remaining: Ad[], final: Array<Ad>) => {
   return info.length;
 }
 
-const pickMedium = (remaining: Ad[], final: Array<Ad>) => {
+const pickMedium = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 2);
   info.forEach((ndx) => {
     const pick = remaining.splice(ndx, 1);
@@ -34,7 +30,7 @@ const pickMedium = (remaining: Ad[], final: Array<Ad>) => {
   return info.length;
 }
 
-const pickLarge = (remaining: Ad[], final: Array<Ad>) => {
+const pickLarge = (remaining: Ad[], final: Ad[]) => {
   const info = getAdsBySizeOrient(remaining, 3);
   info.forEach((ndx) => {
     const pick = remaining.splice(ndx, 1);
@@ -56,7 +52,7 @@ const getAdsBySizeOrient = (ads: Ad[], size: number, orient?: string, limit = 1)
 }
 
 const getSmalls = (remaining: Ad[]) => {
-  const arr: Array<Ad> = [];
+  const arr: Ad[] = [];
   while (pickSmall(remaining, arr) > 0) {
     continue;
   }
@@ -64,7 +60,7 @@ const getSmalls = (remaining: Ad[]) => {
 }
 
 const getMediums = (remaining: Ad[]) => {
-  const arr: Array<Ad> = [];
+  const arr: Ad[] = [];
   while (pickMedium(remaining, arr) > 0) {
     continue;
   }
@@ -72,7 +68,7 @@ const getMediums = (remaining: Ad[]) => {
 }
 
 const getLarges = (remaining: Ad[]) => {
-  const arr: Array<Ad> = [];
+  const arr: Ad[] = [];
   while (pickLarge(remaining, arr) > 0) {
     continue;
   }
@@ -82,7 +78,7 @@ const getLarges = (remaining: Ad[]) => {
 const cloudLimitsUrl = (ad: Ad): string => {
   const parts = ad.imgUrl.split('upload/');
   if (parts.length != 2) { return ad.imgUrl; }
-  let crop: string = 'c_fit';
+  let crop = 'c_fit';
   switch (ad.size) {
     case 1:
       crop += ',w_250,h_250';
@@ -122,20 +118,20 @@ const gridPosition = (ad: Ad): string => {
 
 const randomize = () => Math.round(Math.random()) - Math.round(Math.random())
 
-export const loader: LoaderFunction = async ({request, params}) => {
+export const loader: LoaderFunction = async ({params}) => {
   invariant(params.yr, "Year not provided");
   const yr = parseInt(params.yr, 10);
   if(isNaN(yr)){
     throw(new Error("Year not valid"));
   }
   const ads = await getAds({ year: yr });
-  return json<LoaderData>({
+  return {
     splitAds: {
       small: getSmalls(ads).sort(randomize),
       medium: getMediums(ads).sort(randomize),
       large: getLarges(ads).sort(randomize),
     }
-  });
+  };
 };
 
 export default function Index() {

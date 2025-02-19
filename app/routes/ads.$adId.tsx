@@ -1,16 +1,14 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import type { ActionFunction, LoaderFunction } from "react-router";
+import { redirect , Form, useLoaderData, useRouteError, isRouteErrorResponse } from "react-router";
 import invariant from "tiny-invariant";
 
 import type { Ad } from "~/models/ad.server";
-import { deleteAd } from "~/models/ad.server";
-import { getAd } from "~/models/ad.server";
+import { deleteAd , getAd } from "~/models/ad.server";
 import { requireUserId } from "~/session.server";
 
-type LoaderData = {
+interface LoaderData {
   ad: Ad;
-};
+}
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
@@ -23,7 +21,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!ad) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>({ ad });
+  return { ad };
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -48,7 +46,7 @@ export default function AdDetailsPage() {
       <label className="my-4">Sponsor Url : {ad.sponsorUrl.length ? <a href={ad.sponsorUrl} target="_blank" rel="noreferrer">{ad.sponsorUrl}</a> : null}</label>
       <label className="my-4">Size : {ad.size}</label>
       <label className="my-4">Year : {ad.year}</label>
-      <label className="my-4">Updated : {ad.updatedAt}</label>
+      <label className="my-4">Updated : {ad.updatedAt.toString()}</label>
       <hr className="my-4" />
       <Form method="post">
         <button
@@ -69,8 +67,10 @@ export function ErrorBoundary({ error }: { error: Error }) {
 }
 
 export function CatchBoundary() {
-  const caught = useCatch();
-
+  const caught = useRouteError();
+  if(!isRouteErrorResponse(caught)){
+    throw new Error("Caught an error that is not a route error response");
+  }
   if (caught.status === 404) {
     return <div>Ad not found</div>;
   }
