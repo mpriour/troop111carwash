@@ -4,7 +4,7 @@ import { Link, useLoaderData } from "react-router";
 import { DEFAULT_YEAR } from "~/constants";
 import type { Ad } from "~/models/ad.server";
 import { getAds } from "~/models/ad.server";
-import { useOptionalUser } from "~/utils";
+import { formatCloudUrl, useOptionalUser } from "~/utils";
 
 interface LoaderData {
   splitAds: {
@@ -77,26 +77,6 @@ const getLarges = (remaining: Ad[]) => {
   return arr;
 }
 
-const cloudLimitsUrl = (ad: Ad): string => {
-  const parts = ad.imgUrl.split('upload/');
-  if (parts.length != 2) { return ad.imgUrl; }
-  let crop = 'c_fit,f_auto';
-  switch (ad.size) {
-    case 1:
-      crop += ',w_250,h_250';
-      break;
-    case 2:
-      crop += (ad.orient == 'l' ? ',w_400' : ',h_380');
-      break;
-    case 3:
-      crop += (ad.orient == 'l' ? ',w_800' : ',h_760');
-      break;
-    default:
-      break;
-  }
-  return `${parts[0]}upload/${crop}/${parts[1]}`
-}
-
 const masonryStyles = (ad: Ad): string => {
   let cn = 'mx-auto';
   if (ad.size === 3) {
@@ -167,13 +147,13 @@ export default function Index() {
                     <a href={`http://${smAd.sponsorUrl}`} className="underline decoration-blue-800">
                       <h3 className="font-sans font-semibold text-xs md:text-lg text-blue-800">{smAd.sponsor}</h3>
                       <div className="max-h-[250px]">
-                        <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
+                        <img src={formatCloudUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
                       </div>
                     </a>
                   ) : (<>
                     <h3 className="font-sans font-semibold text-xs md:text-lg text-gray-700">{smAd.sponsor}</h3>
                     <div className="max-h-[250px]">
-                      <img src={cloudLimitsUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
+                      <img src={formatCloudUrl(smAd)} alt={smAd.sponsor} className="mx-auto max-h-full max-w-full" />
                     </div>
                   </>)}
                 </div>
@@ -187,13 +167,13 @@ export default function Index() {
                     <a href={`http://${ad.sponsorUrl}`} className="underline decoration-blue-800">
                       <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{ad.sponsor}</h3>
                       <div className="h-[90%]">
-                        <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                        <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
                       </div>
                     </a>
                   ) : (<>
                     <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{ad.sponsor}</h3>
                     <div className="h-[90%]">
-                      <img src={cloudLimitsUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                      <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
                     </div>
                   </>)}
                 </div>
@@ -203,13 +183,13 @@ export default function Index() {
                     <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full underline decoration-blue-800">
                       <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{mdAd.sponsor}</h3>
                       <div className="flex h-full">
-                        <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
+                        <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
                       </div>
                     </a>
                   ) : (<div className="flex flex-col h-full">
                     <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
                     <div className="flex h-full">
-                      <img src={cloudLimitsUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
+                      <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
                     </div>
                   </div>)}
                 </div>

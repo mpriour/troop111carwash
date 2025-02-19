@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useMatches } from "react-router";
 
+import type { Ad } from "~/models/ad.server";
 import type { User } from "~/models/user.server";
 
 /**
@@ -48,4 +49,24 @@ export function validateEmail(email: unknown): email is string {
 
 export function safeRedirect(redirectTo: unknown, fallback: string): string {
   return redirectTo && typeof redirectTo == "string" && !redirectTo.includes("//") ? redirectTo : fallback;
+}
+
+export const formatCloudUrl = (ad: Ad): string => {
+  const parts = ad.imgUrl.split('upload/');
+  if (parts.length != 2) { return ad.imgUrl; }
+  let crop = 'c_fit,f_auto';
+  switch (ad.size) {
+    case 1:
+      crop += ',w_250,h_250';
+      break;
+    case 2:
+      crop += (ad.orient == 'l' ? ',w_400' : ',h_380');
+      break;
+    case 3:
+      crop += (ad.orient == 'l' ? ',w_800' : ',h_760');
+      break;
+    default:
+      break;
+  }
+  return `${parts[0]}upload/${crop}/${parts[1]}`
 }
