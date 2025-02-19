@@ -1,16 +1,14 @@
 # base node image
-FROM node:22-bullseye-slim as base
+FROM node:22-bullseye-slim AS base
 
 # set for base and all layer that inherit from it
-ENV NODE_ENV production
-ENV PORT="8080"
-ENV HOST="0.0.0.0"
+ENV NODE_ENV="production"
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl sqlite3
 
 # Install all node_modules, including dev dependencies
-FROM base as deps
+FROM base AS deps
 
 WORKDIR /myapp
 
@@ -18,7 +16,7 @@ ADD package.json .npmrc ./
 RUN npm install --include=dev
 
 # Setup production node_modules
-FROM base as production-deps
+FROM base AS production-deps
 
 WORKDIR /myapp
 
@@ -27,11 +25,15 @@ ADD package.json .npmrc ./
 RUN npm prune --omit=dev
 
 # Build the app
-FROM base as build
+FROM base AS build
 
 WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
+
+ENV PORT="8080"
+ENV HOST="0.0.0.0"
+ENV NODE_ENV="production"
 
 ADD prisma .
 RUN npx prisma generate
@@ -44,6 +46,7 @@ FROM base
 
 ENV DATABASE_URL=file:/data/sqlite.db
 ENV PORT="8080"
+ENV HOST="0.0.0.0"
 ENV NODE_ENV="production"
 
 # add shortcut for connecting to database CLI
@@ -59,5 +62,9 @@ COPY --from=build /myapp/public /myapp/public
 COPY --from=build /myapp/package.json /myapp/package.json
 COPY --from=build /myapp/start.sh /myapp/start.sh
 COPY --from=build /myapp/prisma /myapp/prisma
+
+ENV PORT="8080"
+ENV HOST="0.0.0.0"
+ENV NODE_ENV="production"
 
 ENTRYPOINT [ "./start.sh" ]
