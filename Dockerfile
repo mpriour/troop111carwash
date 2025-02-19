@@ -3,6 +3,8 @@ FROM node:22-bullseye-slim as base
 
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
+ENV PORT="8080"
+ENV HOST="0.0.0.0"
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl sqlite3
