@@ -1,4 +1,4 @@
-app = "carwash2-04d1"
+app = "troop111carwash-bb31"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
