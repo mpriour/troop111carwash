@@ -43,10 +43,10 @@ export default function AdDetailsPage() {
     <div>
       <h3 className="text-2xl font-bold">{ad.sponsor}</h3>
       <img src={ad.imgUrl} alt={ad.sponsor} className="my-4" />
-      <label className="my-4">Sponsor Url : {ad.sponsorUrl.length ? <a href={ad.sponsorUrl} target="_blank" rel="noreferrer">{ad.sponsorUrl}</a> : null}</label>
-      <label className="my-4">Size : {ad.size}</label>
-      <label className="my-4">Year : {ad.year}</label>
-      <label className="my-4">Updated : {ad.updatedAt.toString()}</label>
+      <label className="my-4 block">Sponsor Url : {ad.sponsorUrl.length ? <a href={ad.sponsorUrl} target="_blank" rel="noreferrer">{ad.sponsorUrl}</a> : null}</label>
+      <label className="my-4 block">Size : {ad.size}</label>
+      <label className="my-4 block">Year : {ad.year}</label>
+      <label className="my-4 block">Updated : {ad.updatedAt.toString()}</label>
       <hr className="my-4" />
       <Form method="post">
         <button
