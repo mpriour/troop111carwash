@@ -71,7 +71,8 @@ export default function Join() {
   return (
     <div className="flex min-h-full flex-col justify-center">
       <div className="mx-auto w-full max-w-md px-8">
-        <Form method="post" className="space-y-6">
+        ASK THE ADMIN TO CREATE YOUR ACCOUNT
+        {/* <Form method="post" className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email address
@@ -142,7 +143,7 @@ export default function Join() {
               </Link>
             </div>
           </div>
-        </Form>
+        </Form> */}
       </div>
     </div>
   );
