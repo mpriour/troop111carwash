@@ -101,25 +101,6 @@ export default function AdsDashboardPage() {
           </div>
         ) : (
           <>
-            <Form method="get" className="mb-4 flex flex-col gap-2 sm:max-w-sm">
-              <label htmlFor="year" className="text-sm font-medium text-gray-700">
-                Select Year
-              </label>
-              <select
-                id="year"
-                name="year"
-                defaultValue={selectedYear?.toString()}
-                onChange={(event) => event.currentTarget.form?.requestSubmit()}
-                className="rounded-md border border-gray-300 px-3 py-2 text-sm"
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </Form>
-
             <div className="mb-4 flex flex-wrap gap-2">
               {years.map((year) => {
                 const active = year === selectedYear;
