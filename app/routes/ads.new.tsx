@@ -98,7 +98,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function NewAdPage() {
   const actionData = useActionData() as ActionData;
-
+  const currentYear = new Date().getFullYear();
   return (
     <>
       <h1 className="text-2xl font-bold text-center mb-4">Create a new Ad</h1>
@@ -180,7 +180,7 @@ export default function NewAdPage() {
                 <span>Year: </span>
                 <input
                   name="year"
-                  defaultValue={DEFAULT_YEAR}
+                  defaultValue={currentYear}
                   className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
                 />
               </label>
