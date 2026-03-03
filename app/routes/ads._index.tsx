@@ -140,9 +140,12 @@ export default function AdsDashboardPage() {
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {adItems.map((ad) => (
-                  <article key={ad.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                  <article
+                    key={ad.id}
+                    className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+                  >
                     <img src={formatCloudUrl(ad)} alt={ad.sponsor} className="bg-gray-100 object-contain p-2" />
-                    <div className="space-y-3 p-4">
+                    <div className="flex flex-1 flex-col gap-3 p-4">
                       <div>
                         <h2 className="text-lg font-semibold text-gray-900">{ad.sponsor}</h2>
                         <p className="text-xs text-gray-500">
@@ -162,7 +165,7 @@ export default function AdsDashboardPage() {
                         </a>
                       ) : null}
 
-                      <div className="flex flex-wrap gap-2 pt-1">
+                      <div className="mt-auto flex flex-wrap gap-2 pt-1">
                         <Link
                           to={`/ads/${ad.id}`}
                           className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:border-gray-400"
