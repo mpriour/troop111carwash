@@ -98,7 +98,7 @@ const gridPosition = (ad: Ad): string => {
   return "";
 }
 
-const randomize = () => Math.round(Math.random()*3) - Math.round(Math.random()*3)
+const randomize = () => Math.round(Math.random() * 3) - Math.round(Math.random() * 3)
 
 export const loader: LoaderFunction = async () => {
   const ads = await getAds({ year: DEFAULT_YEAR });
@@ -122,7 +122,10 @@ export default function Index() {
             <div>
               <h1 className="text-blue-700">Welcome {user.email}</h1>
             </div>
-            <Link to="./ads/new" className="rounded bg-blue-600 py-2 px-4 text-white hover:bg-blue-800 focus:bg-blue-400">Create Ad</Link>
+            <div className="flex gap-4">
+              <Link to="./ads" className="rounded bg-blue-600 py-2 px-4 text-white hover:bg-blue-800 focus:bg-blue-400">Ads Dashboard</Link>
+              <Link to="./ads/new" className="rounded bg-blue-600 py-2 px-4 text-white hover:bg-blue-800 focus:bg-blue-400">Create Ad</Link>
+            </div>
           </> :
           <>
             <div className="text-center basis-full">
@@ -162,38 +165,38 @@ export default function Index() {
             <div className="grid grid-cols-2 auto-rows-[150px] gap-2 sm:auto-rows-[400px] sm:gap-4">
               {data.splitAds.large.map((ad, i) => (
                 <>
-                <div className={`text-center my-2 sm:my-0 ${gridPosition(ad)}`} key={ad.id ?? i}>
-                  {ad.sponsorUrl.length > 0 ? (
-                    <a href={`http://${ad.sponsorUrl}`} className="underline decoration-blue-800">
-                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{ad.sponsor}</h3>
+                  <div className={`text-center my-2 sm:my-0 ${gridPosition(ad)}`} key={ad.id ?? i}>
+                    {ad.sponsorUrl.length > 0 ? (
+                      <a href={`http://${ad.sponsorUrl}`} className="underline decoration-blue-800">
+                        <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{ad.sponsor}</h3>
+                        <div className="h-[90%]">
+                          <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                        </div>
+                      </a>
+                    ) : (<>
+                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{ad.sponsor}</h3>
                       <div className="h-[90%]">
                         <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
                       </div>
-                    </a>
-                  ) : (<>
-                    <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{ad.sponsor}</h3>
-                    <div className="h-[90%]">
-                      <img src={formatCloudUrl(ad)} alt={ad.sponsor} className={masonryStyles(ad)} />
+                    </>)}
+                  </div>
+                  {data.splitAds.medium.splice(0, 2).map((mdAd, p) => (
+                    <div className={`text-center my-2 sm:my-0 ${gridPosition(mdAd)}`} key={mdAd.id ?? p}>
+                      {mdAd.sponsorUrl.length > 0 ? (
+                        <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full underline decoration-blue-800">
+                          <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{mdAd.sponsor}</h3>
+                          <div className="flex h-full">
+                            <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
+                          </div>
+                        </a>
+                      ) : (<div className="flex flex-col h-full">
+                        <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
+                        <div className="flex h-full">
+                          <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
+                        </div>
+                      </div>)}
                     </div>
-                  </>)}
-                </div>
-                {data.splitAds.medium.splice(0,2).map((mdAd, p) => (
-                  <div className={`text-center my-2 sm:my-0 ${gridPosition(mdAd)}`} key={mdAd.id ?? p}>
-                  {mdAd.sponsorUrl.length > 0 ? (
-                    <a href={`http://${mdAd.sponsorUrl}`} className="flex flex-col h-full underline decoration-blue-800">
-                      <h3 className="font-sans text-sm font-semibold md:text-2xl text-blue-800">{mdAd.sponsor}</h3>
-                      <div className="flex h-full">
-                        <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
-                      </div>
-                    </a>
-                  ) : (<div className="flex flex-col h-full">
-                    <h3 className="font-sans text-sm font-semibold md:text-2xl text-gray-700">{mdAd.sponsor}</h3>
-                    <div className="flex h-full">
-                      <img src={formatCloudUrl(mdAd)} alt={mdAd.sponsor} className={`my-auto ${masonryStyles(mdAd)}`} />
-                    </div>
-                  </div>)}
-                </div>
-                ))}
+                  ))}
                 </>
               ))}
             </div>
