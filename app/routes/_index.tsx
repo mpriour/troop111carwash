@@ -1,5 +1,6 @@
+import { useState } from "react";
 import type { LoaderFunction } from "react-router"
-import { Link, useLoaderData } from "react-router";
+import { Link, redirect, useLoaderData, useNavigate } from "react-router";
 
 import { DEFAULT_YEAR } from "~/constants";
 import type { Ad } from "~/models/ad.server";
@@ -114,6 +115,17 @@ export const loader: LoaderFunction = async () => {
 export default function Index() {
   const data = useLoaderData<typeof loader>() as LoaderData;
   const user = useOptionalUser();
+  const [logoClicks, setLogoClicks] = useState(0);
+  const navigate = useNavigate();
+  const handleLogoClick = () => {
+    setLogoClicks((prev) => {
+      const newCount = prev + 1;
+      if (newCount >= 3) {
+        navigate("./login");
+      }
+      return newCount;
+    });
+  }
   return (
     <>
       <header className="relative w-full py-3 px-2 sm:p-6 bg-yellow-400 flex justify-between items-center gap-x-2">
@@ -129,7 +141,7 @@ export default function Index() {
           </> :
           <>
             <div className="text-center basis-full">
-              <h1 className="text-blue-700 font-serif text-lg md:text-4xl font-semibold">
+              <h1 className="text-blue-700 font-serif text-lg md:text-4xl font-semibold" onClick={handleLogoClick}>
                 <img className="md:inline-block md:w-16 md:mr-4 w-6 mx-auto" src="https://res.cloudinary.com/kestrel1337/image/upload/t_media_lib_thumb/v1650305469/t111cw/cropped_logo_j147y5.jpg" alt="Troop 111 Kerrville logo" />
                 Troop 111 Car Wash Sponsors
               </h1>
